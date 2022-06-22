@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { createClient, WagmiConfig, chain, configureChains } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+
+import Distribute from "./Distribute";
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [chain.ropsten],
+  [publicProvider()]
+);
+
+// Set up client
+const client = createClient({
+  autoConnect: true,
+  connectors: [new MetaMaskConnector({ chains })],
+  provider,
+  webSocketProvider,
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WagmiConfig client={client}>
+      <Distribute></Distribute>
+    </WagmiConfig>
   );
 }
 
